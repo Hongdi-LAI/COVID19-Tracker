@@ -17,6 +17,7 @@ import "leaflet/dist/leaflet.css";
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState("worldwide");
+  const [countryName, setCountryName] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
@@ -61,7 +62,6 @@ function App() {
 
   const onCountryChange = async (event) => {
     const countryCode = event.target.value;
-    /* console.log("YOOOOOOOOO>>>>>>", CountryCode); */
     setCountry(countryCode);
 
     /* Condition for url fetching */
@@ -77,13 +77,15 @@ function App() {
       .then((data) => {
         setCountry(countryCode);
         setCountryInfo(data);
-        /* console.log("here is countryinfo>>>",data.countryInfo) */
+        /* console.log("here is countryinfo>>>", data.country); */
         setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
         setMapZoom(4);
+        setCountryName(data.country);
       });
   };
 
   /* console.log("countryInfo >>>", countryInfo); */
+
   return (
     <div className="app">
       <div className="app__left">
@@ -97,7 +99,9 @@ function App() {
               onChange={onCountryChange}
               value={country}
             >
-              <MenuItem value="worldwide">Worldwide</MenuItem>
+              {country === "worldwide" && (
+                <MenuItem value="worldwide">Worldwide</MenuItem>
+              )}
               {/* Loop thru all the country and show dropdown list of that */}
               {countries.map((country) => (
                 <MenuItem value={country.value}>{country.name}</MenuItem>
@@ -143,8 +147,14 @@ function App() {
         <CardContent>
           <h3>Live Cases by Country</h3>
           <Table countries={tableData} />
-          <h3 className="app__graphTitle">Worldwide New {casesType}</h3>
-          <LineGraph className="app__graph" casesType={casesType} />
+          <h3 className="app__graphTitle">
+            {countryName} New {casesType}
+          </h3>
+          <LineGraph
+            className="app__graph"
+            casesType={casesType}
+            countryName={countryName === "worldwide" ? "all" : countryName}
+          />
         </CardContent>
       </Card>
     </div>

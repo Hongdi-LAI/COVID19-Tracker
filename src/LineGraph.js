@@ -48,7 +48,7 @@ const options = {
   },
 };
 
-const buildChartData = (data, casesType) => {
+const buildChartDataWorldwide = (data, casesType) => {
   const chartData = [];
   let lastDataPoint;
   for (let date in data.cases) {
@@ -65,22 +65,47 @@ const buildChartData = (data, casesType) => {
   return chartData;
 };
 
-function LineGraph({ casesType = "cases", ...props }) {
+const buildChartDataCountries = (data, casesType) => {
+  const chartData = [];
+  const timeline = "timeline";
+  let lastDataPoint;
+  for (let date in data.timeline.cases) {
+    if (lastDataPoint) {
+      const newDataPoint = {
+        x: date,
+        /* calculate everyday new data */
+        y: data[timeline][casesType][date] - lastDataPoint,
+      };
+      chartData.push(newDataPoint);
+    }
+    lastDataPoint = data[timeline][casesType][date];
+  }
+  return chartData;
+};
+
+function LineGraph({ casesType = "cases", countryName = "all", ...props }) {
   const [data, setData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=120")
+      await fetch(
+        `https://disease.sh/v3/covid-19/historical/${countryName}?lastdays=120`
+      )
         .then((response) => {
           return response.json();
         })
         .then((data) => {
-          let chartData = buildChartData(data, casesType);
+          let chartData;
+          if (countryName === "all") {
+            chartData = buildChartDataWorldwide(data, casesType);
+          } else {
+            chartData = buildChartDataCountries(data, casesType);
+          }
           setData(chartData);
         });
     };
     fetchData();
-  }, [casesType]);
+  }, [casesType, countryName]);
 
   return (
     <div className={props.className}>

@@ -1,11 +1,19 @@
-import { FormControl, MenuItem, Select } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  FormControl,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import InfoBox from "./InfoBox";
+import Map from "./Map";
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState("worldwide");
+  const [countryInfo, setCountryInfo] = useState({});
 
   /* App name */
   useEffect(() => {
@@ -29,38 +37,87 @@ function App() {
     getCountriesData();
   }, []);
 
+  /* worldwide cases initailised */
+  useEffect(() => {
+    fetch("https://disease.sh/v3/covid-19/all")
+      .then((response) => response.json())
+      .then((data) => {
+        setCountryInfo(data);
+      });
+  }, []);
+
   const onCountryChange = async (event) => {
-    const CountryCode = event.target.value;
+    const countryCode = event.target.value;
     /* console.log("YOOOOOOOOO>>>>>>", CountryCode); */
-    setCountry(CountryCode);
+    setCountry(countryCode);
+
+    /* Condition for url fetching */
+    const url =
+      countryCode === "worldwide"
+        ? "https://disease.sh/v3/covid-19/all"
+        : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
+    /* https://disease.sh/v3/covid-19/all */
+    /* https://disease.sh/v3/covid-19/countries/[COUNTRY_CODE] */
+
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        setCountry(countryCode);
+        setCountryInfo(data);
+      });
   };
+
+  /* console.log("countryInfo >>>", countryInfo); */
   return (
     <div className="app">
-      {/* Header: Title + Select input dropdown field */}
-      <div className="app__header">
-        <h1>COVID-19 TRACKER</h1>
-        {/* DROPDOWN BOX */}
-        <FormControl className="app_dropdown">
-          <Select variant="outlined" onChange={onCountryChange} value={country}>
-            <MenuItem value="worldwide">Worldwide</MenuItem>
-            {/* Loop thru all the country and show dropdown list of that */}
-            {countries.map((country) => (
-              <MenuItem value={country.value}>{country.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      <div className="app__left">
+        {/* Header: Title + Select input dropdown field */}
+        <div className="app__header">
+          <h1>COVID-19 TRACKER</h1>
+          {/* DROPDOWN BOX */}
+          <FormControl className="app_dropdown">
+            <Select
+              variant="outlined"
+              onChange={onCountryChange}
+              value={country}
+            >
+              <MenuItem value="worldwide">Worldwide</MenuItem>
+              {/* Loop thru all the country and show dropdown list of that */}
+              {countries.map((country) => (
+                <MenuItem value={country.value}>{country.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        {/* InfoBox */}
+        <div className="app__stats">
+          <InfoBox
+            title="Coronavirus Cases"
+            cases={countryInfo.todayCases}
+            total={countryInfo.cases}
+          />
+          <InfoBox
+            title="Recovered"
+            cases={countryInfo.todayRecovered}
+            total={countryInfo.recovered}
+          />
+          <InfoBox
+            title="Deaths"
+            cases={countryInfo.todayDeaths}
+            total={countryInfo.deaths}
+          />
+        </div>
+        {/* Map */}
+        <Map />
       </div>
-
-      <div className="app__stats">
-        <InfoBox title="Coronavirus Cases" cases={123} total={200} />
-        <InfoBox title="Recovered" cases={123} total={200} />
-        <InfoBox title="Deaths" cases={123} total={200} />
-      </div>
-
-      {/* Table */}
-      {/* Graph */}
-
-      {/* Map */}
+      <Card className="app__right">
+        <CardContent>
+          <h3>Live Cases by Country</h3>
+          {/* Table */}
+          <h3>Worldwide New Cases</h3>
+          {/* Graph */}
+        </CardContent>
+      </Card>
     </div>
   );
 }

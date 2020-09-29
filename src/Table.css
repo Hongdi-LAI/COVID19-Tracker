@@ -1,0 +1,31 @@
+.table {
+  margin-top: 20px;
+  overflow: scroll;
+  height: 400px;
+  color: #6a5d5d;
+  background-color: white;
+}
+
+.table::-webkit-scrollbar {
+  display: none;
+}
+
+.table {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.table tr {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* for all table data (td) */
+.table td {
+  padding: 0.5rem;
+}
+
+/* go to table row (tr), for each odd row, set background color */
+.table tr:nth-of-type(odd) {
+  background-color: #f3f2f8;
+}

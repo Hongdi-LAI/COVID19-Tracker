@@ -66,21 +66,27 @@ const buildChartDataWorldwide = (data, casesType) => {
 };
 
 const buildChartDataCountries = (data, casesType) => {
-  const chartData = [];
-  const timeline = "timeline";
-  let lastDataPoint;
-  for (let date in data.timeline.cases) {
-    if (lastDataPoint) {
-      const newDataPoint = {
-        x: date,
-        /* calculate everyday new data */
-        y: data[timeline][casesType][date] - lastDataPoint,
-      };
-      chartData.push(newDataPoint);
+  /* Some Countries dont have data */
+  /* https://disease.sh/v3/covid-19/historical/aruba?lastdays=120 */
+  if (data.timeline) {
+    const chartData = [];
+    const timeline = "timeline";
+    let lastDataPoint;
+    for (let date in data?.timeline.cases) {
+      if (lastDataPoint) {
+        const newDataPoint = {
+          x: date,
+          /* calculate everyday new data */
+          y: data[timeline][casesType][date] - lastDataPoint,
+        };
+        chartData.push(newDataPoint);
+      }
+      lastDataPoint = data[timeline][casesType][date];
     }
-    lastDataPoint = data[timeline][casesType][date];
+    return chartData;
+  } else {
+    window.alert("Country not found or doesn't have any historical data.");
   }
-  return chartData;
 };
 
 function LineGraph({ casesType = "cases", countryName = "all", ...props }) {

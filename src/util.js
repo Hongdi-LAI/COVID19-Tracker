@@ -10,11 +10,11 @@ const casesTypeColors = {
   },
   recovered: {
     hex: "#7dd71d",
-    multiplier: 600,
+    multiplier: 700,
   },
   deaths: {
     hex: "#fb4443",
-    multiplier: 700,
+    multiplier: 900,
   },
 };
 
@@ -32,6 +32,10 @@ export const sortData = (data) => {
   /* sortedData.sort((a,b) => (a.cases > b.cases ? -1: 1)); */
   return sortedData;
 };
+
+// nice number representation
+export const prettyPrintStat = (stat) =>
+  stat ? `+${numeral(stat).format("0.0a")}` : "+0";
 
 // Draw circles on the map with interactive tooltip
 export const showDataOnMap = (data, casesType = "cases") =>

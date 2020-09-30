@@ -7,7 +7,10 @@
 # E-commerce Service App - Design of [COVID19-Tracker](https://worldwide-covid-19-tracker.web.app/)
  This app serves as a data dashboard to visualise COVID-19 pandemic situation both on a gobal scale and in each specific country
  
-<img src="WireFrame of COVID-19 Tracker.png" />
+
+<img src="COVID19-Tracker-Profile.PNG" height = "500px" width="1200px" />
+
+
 
 </br>
 
@@ -50,7 +53,7 @@
 ## Components
 </br>
 
-
+<img src="WireFrame of COVID-19 Tracker.png" />
 
 ## My Other Open Source Projects
 </br>

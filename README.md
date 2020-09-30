@@ -4,7 +4,7 @@
 
 
 
-# E-commerce Service App - Design of [COVID19-Tracker](https://worldwide-covid-19-tracker.web.app/)
+# Data Dashboard App - Design of [COVID19-Tracker](https://worldwide-covid-19-tracker.web.app/)
  This app serves as a data dashboard to visualise COVID-19 pandemic situation both on a gobal scale and in each specific country
  
 
